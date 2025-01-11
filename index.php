@@ -2,10 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Pamutlabor\Module\Example;
-
-$example = new Example();
-echo $example->getMessage();
+require __DIR__ . '/src/Core/Router.php';
 
 $log = new \Monolog\Logger('name');
 $log->pushHandler(new Monolog\Handler\StreamHandler('/tmp/app.log', Monolog\Logger::WARNING));

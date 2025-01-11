@@ -8,6 +8,7 @@
     },
     "type": "project",
     "require": {
-        "monolog/monolog": "3.8.*"
+        "monolog/monolog": "3.8.*",
+        "nikic/fast-route": "^1.3"
     }
 }
