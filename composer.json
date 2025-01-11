@@ -1,0 +1,13 @@
+{
+    "name": "mo911/probafeladat",
+    "description": "Pamutlabor próbafeladat",
+    "autoload": {
+        "psr-4": {
+            "Pamutlabor\\": "src/"
+        }
+    },
+    "type": "project",
+    "require": {
+        "monolog/monolog": "3.8.*"
+    }
+}
