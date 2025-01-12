@@ -12,10 +12,10 @@
 
 4. Import the database via the command line: 
    1. Enter the container:
-    ```bash
+   ```bash
     docker exec -it probafeladat-app bash
-    ```
-  2. Run the following command inside the container:
+   ```
+   2. Run the following command inside the container:
    ```bash
     mysql -h proba-database -u root -p welove_test < welovetest_20250112.sql
    ```
