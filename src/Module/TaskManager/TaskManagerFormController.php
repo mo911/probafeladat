@@ -55,10 +55,10 @@ class TaskManagerFormController extends LayoutController
         return $result;
     }
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
-    {
+    {        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input = [
-                'projectId' => $post['projectId'],
+                'projectId' => empty($post['projectId']) ? 0 : $post['projectId'],
                 'statusId' => $post['statusId'],
                 'ownerId' => $post['ownerId'],
                 'projectTitle' => $post['projectTitle'],
