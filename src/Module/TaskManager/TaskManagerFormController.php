@@ -12,16 +12,11 @@ class TaskManagerFormController extends LayoutController
         'title' => 'Projekt'
     ];
 
-    protected function createOrUpdateProject($data) {
-        $input = [
-            'projectId' => $data['projectId'],
-            'statusId' => $data['statusId'],
-            'ownerId' => $data['ownerId'],
-            'projectTitle' => $data['projectTitle'],
-            'projectDescription' => $data['projectDescription']
-        ];
+    protected $errors = [];
+
+    protected function createOrUpdateProject($input) {
         if ($input['projectId'] > 0) {
-            $res = Project::load($data['projectId']);
+            $res = Project::load($input['projectId']);
             if($res){
                 Project::update($input);
             }
@@ -34,14 +29,42 @@ class TaskManagerFormController extends LayoutController
         $this->layout = new TaskManagerFormView();
     }
 
-    protected function validateForm(): bool {
-        return true;
+    protected function validateForm($input): bool {
+        $result = true;
+        if(isset($input['projectId']) && !is_numeric($input['projectId'])){
+            $result = false;
+            $this->errors[] = 'Projekt id csak szám lehet';
+        }
+        if(!is_numeric($input['statusId'])){
+            $result = false;
+            $this->errors[] = 'Status Id csak szám lehet';
+        }
+        if(!is_numeric($input['ownerId'])){
+            $result = false;
+            $this->errors[] = 'Status Id csak szám lehet';
+        }
+        if(strlen($input['projectTitle']) == 0){
+            $result = false;
+            $this->errors[] = 'Title nem lehet üres';
+        }
+        if(strlen($input['projectDescription']) == 0){
+            $result = false;
+            $this->errors[] = 'Description nem lehet üres';
+        }
+        return $result;
     }
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if($this->validateForm()){
-                $this->createOrUpdateProject($post);
+            $input = [
+                'projectId' => $post['projectId'],
+                'statusId' => $post['statusId'],
+                'ownerId' => $post['ownerId'],
+                'projectTitle' => $post['projectTitle'],
+                'projectDescription' => $post['projectDescription']
+            ];
+            if($this->validateForm($input)){
+                $this->createOrUpdateProject($input);
                 header('Location: /');
                 exit();
             }
@@ -49,7 +72,7 @@ class TaskManagerFormController extends LayoutController
         $res = $this->loadData($variable['id'] ?? 0);
         $statuses = $this->loadStatuses();
         $owners = $this->loadOwners();
-        $this->data = array_merge($this->data, ['project' => $res], ['statuses' => $statuses], ['owners' => $owners]);
+        $this->data = array_merge($this->data, ['project' => $res], ['statuses' => $statuses], ['owners' => $owners], ['errors' => $this->errors]);
     }
 
     protected function loadStatuses()

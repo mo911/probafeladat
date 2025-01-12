@@ -12,6 +12,18 @@ class TaskManagerFormView extends LayoutView
         $projectDescription = $data['project']['projectDescription'] ?? "";
         $ownerId = $data['project']['ownerId'] ?? "";
         $ownerEmail = $data['project']['ownerEmail'] ?? "";
+
+        $errorMessage = "";        
+        if(!empty($data['errors'])){
+            $errorDescription = "";
+            foreach ($data['errors'] as $error) {
+                $errorDescription .= "$error <br>"; 
+            }
+            $errorMessage = "<div class='alert alert-danger text-center fixed-bottom mb-0' role='alert'>
+                $errorDescription
+            </div>";
+        }
+
         return $this->script($data['owners']) . '
             <div class="container mt-4 needs-validation" novalidate>
                 <form method="post">
@@ -46,8 +58,7 @@ class TaskManagerFormView extends LayoutView
                     </div>
 
                     <button type="submit" class="btn btn-primary">Mentés</button>
-                </form>
-            </div>
+                </form>' . $errorMessage . '</div>
         ';
     }
 

@@ -12,14 +12,11 @@ class OwnerFormController extends LayoutController
         'title' => 'Kapcsolattartó'
     ];
 
-    protected function createOrUpdateOwner($data) {
-        $input = [
-            'id' => $data['id'],
-            'name' => $data['name'],
-            'email' => $data['email']
-        ];
+    protected $errors = [];
+
+    protected function createOrUpdateOwner($input) {
         if ($input['id'] > 0) {
-            $res = Owner::load($data['id']);
+            $res = Owner::load($input['id']);
             if($res){
                 Owner::update($input);
             }
@@ -32,20 +29,38 @@ class OwnerFormController extends LayoutController
         $this->layout = new OwnerFormView();
     }
 
-    protected function validateForm(): bool {
-        return true;
+    protected function validateForm($input): bool {
+        $result = true;
+        if(!empty($input['id']) && !is_numeric($input['id'])){
+            $result = false;
+            $this->errors[] = 'Owner id csak szám lehet';
+        }
+        if(strlen($input['name']) == 0){
+            $result = false;
+            $this->errors[] = 'Név nem lehet üres';
+        }
+        if(strlen($input['email']) == 0){
+            $result = false;
+            $this->errors[] = 'Email nem lehet üres';
+        }
+        return $result;
     }
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if($this->validateForm()){
+            $input = [
+                'id' => $post['id'],
+                'name' => $post['name'],
+                'email' => $post['email']
+            ];
+            if($this->validateForm($input)){
                 $this->createOrUpdateOwner($post);
                 header('Location: /owners');
                 exit();
             }
         }
         $res = $this->loadData($variable['id'] ?? 0);
-        $this->data = array_merge($this->data, ['owner' => $res]);
+        $this->data = array_merge($this->data, ['owner' => $res], ['errors' => $this->errors]);
     }
 
     protected function loadData(int $id = 0)

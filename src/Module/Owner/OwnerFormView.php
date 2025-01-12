@@ -9,7 +9,19 @@ class OwnerFormView extends LayoutView
     protected function content(array $data): string{
         $id = $data['owner']['id'] ?? "";
         $name = $data['owner']['name'] ?? "";
-        $email = $data['owner']['email'] ?? "";        
+        $email = $data['owner']['email'] ?? "";
+
+        $errorMessage = "";        
+        if(!empty($data['errors'])){
+            $errorDescription = "";
+            foreach ($data['errors'] as $error) {
+                $errorDescription .= "$error <br>"; 
+            }
+            $errorMessage = "<div class='alert alert-danger text-center fixed-bottom mb-0' role='alert'>
+                $errorDescription
+            </div>";
+        }
+
         return '
             <div class="container mt-4 needs-validation" novalidate>
                 <form method="post">
@@ -26,7 +38,7 @@ class OwnerFormView extends LayoutView
 
                     <button type="submit" class="btn btn-primary">Mentés</button>
                 </form>
-            </div>
+            ' . $errorMessage . ' </div>
         ';
     }
 }
