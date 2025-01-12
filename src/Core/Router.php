@@ -5,6 +5,8 @@ use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/home', 'Pamutlabor\Module\Example@getMessage');
+    $r->addRoute('GET', '/', 'Pamutlabor\Module\TaskManager\TaskManagerListController@process');
+    $r->addRoute(['GET', 'POST'], '/project[/{id}]', 'Pamutlabor\Module\TaskManager\TaskManagerFormController@process');
     // Add more routes as needed
 });
 
@@ -32,6 +34,7 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
+        $vars = array_merge(['variable' => $vars], ['get' => $_GET], ['post' => $_POST]);
 
         if (is_string($handler) && strpos($handler, '@') !== false) {
             [$class, $method] = explode('@', $handler);
