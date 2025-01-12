@@ -49,6 +49,7 @@ class TaskManagerListView extends LayoutView
                 </nav>
             ';
         }
+        return '';
     }
 
     protected function projectCard($project): string

@@ -15,7 +15,7 @@ class TaskManagerListController extends LayoutController
         $this->layout = new TaskManagerListView();
     }
 
-    const PAGE_LIMIT = 2;
+    const PAGE_LIMIT = 10;
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
     {
         $selectedStatus = 0;
