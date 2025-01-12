@@ -1,13 +1,12 @@
 <?php
 
-namespace Pamutlabor\Module\TaskManager\Model;
+namespace Pamutlabor\Module\Owner\Model;
 
 use Pamutlabor\Core\PamutlaborModel as Model;
 use Pamutlabor\Core\PDODatabase;
 
 class Owner extends Model
 {
-
     public static function save(array $data) {
         if(isset($data['id']) && $data['id'] > 0){
             throw new \Exception('ID_CAN_NOT_HAVE_VALUE');

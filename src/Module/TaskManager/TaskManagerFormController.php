@@ -4,7 +4,6 @@ namespace Pamutlabor\Module\TaskManager;
 
 use Pamutlabor\Core\PDODatabase;
 use Pamutlabor\Module\Layout\LayoutController;
-use Pamutlabor\Module\TaskManager\Model\Owner;
 use Pamutlabor\Module\TaskManager\Model\Project;
 
 class TaskManagerFormController extends LayoutController
@@ -13,60 +12,65 @@ class TaskManagerFormController extends LayoutController
         'title' => 'Projekt'
     ];
 
-    protected function createOrUpdateOwner($data): int {
-        if ($data['ownerId'] > 0) {
-            $res = Owner::load($data['ownerId']);
-            if($res) {
-                Owner::update([
-                    'id' => $data['ownerId'],
-                    'name' => $data['ownerName'],
-                    'email' => $data['ownerEmail']
-                ]);
-            }
-        } else{
-            Owner::save([
-                'name' => $data['ownerName'],
-                'email' => $data['ownerEmail']
-            ]);
-        }
-    }
-
     protected function createOrUpdateProject($data) {
-        if ($data['projectId'] > 0) {
+        $input = [
+            'projectId' => $data['projectId'],
+            'statusId' => $data['statusId'],
+            'ownerId' => $data['ownerId'],
+            'projectTitle' => $data['projectTitle'],
+            'projectDescription' => $data['projectDescription']
+        ];
+        if ($input['projectId'] > 0) {
             $res = Project::load($data['projectId']);
             if($res){
-                Project::update([
-                    
-                ]);
+                Project::update($input);
             }
+        } else {
+            Project::save($input);
         }
     }
 
     public function __construct() {
         $this->layout = new TaskManagerFormView();
     }
+
+    protected function validateForm(): bool {
+        return true;
+    }
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->createOrUpdateOwner($post);
-            $this->createOrUpdateProject($post);
+            if($this->validateForm()){
+                $this->createOrUpdateProject($post);
+                header('Location: /');
+                exit();
+            }
         }
         $res = $this->loadData($variable['id'] ?? 0);
         $statuses = $this->loadStatuses();
-        $this->data = array_merge($this->data, ['project' => $res], ['statuses' => $statuses]);
+        $owners = $this->loadOwners();
+        $this->data = array_merge($this->data, ['project' => $res], ['statuses' => $statuses], ['owners' => $owners]);
     }
 
     protected function loadStatuses()
     {
-        $database = (new PDODatabase())->getConnection();
+        $database = PDODatabase::getConnection();
         $stmt = $database->prepare("SELECT * FROM statuses");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    protected function loadOwners(): array
+    {
+        $database = PDODatabase::getConnection();
+        $stmt = $database->prepare("SELECT * FROM owners");
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     protected function loadData(int $id = 0)
     {
-        $database = (new PDODatabase())->getConnection();
+        $database = PDODatabase::getConnection();
         $stmt = $database->prepare(
             '
                 SELECT 

@@ -4,5 +4,5 @@ namespace Pamutlabor\Core;
 
 abstract class Database
 {
-    abstract public function getConnection();
+    abstract static public function getConnection();
 }

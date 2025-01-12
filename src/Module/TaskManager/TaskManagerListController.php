@@ -22,7 +22,7 @@ class TaskManagerListController extends LayoutController
 
     protected function loadData()
     {
-        $database = (new PDODatabase())->getConnection();
+        $database = PDODatabase::getConnection();
         $stmt = $database->prepare(
             '
                 SELECT 

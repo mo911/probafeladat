@@ -16,14 +16,17 @@ abstract class LayoutView {
                 <title>' . $data['title'] . '</title>
                 <!-- Bootstrap CSS -->
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
             </head>
             <body>
             <nav class="navbar navbar-dark bg-dark">
                 <div class="container-fluid">
                     <span class="navbar-brand mb-0 h1">WeLove Test</span>
                     <div>
+                        <a href="/owners" class="text-white me-3">Kapcsolattartók</a>
+                        <a href="/owner" class="text-white me-3">Kapcsolattartó létrehozás</a>
                         <a href="/" class="text-white me-3">Projektlista</a>
-                        <a href="/project" class="text-white">Szerkesztés/Létrehozás</a>
+                        <a href="/project" class="text-white">Projekt Létrehozás</a>
                     </div>
                 </div>
             </nav>

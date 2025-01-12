@@ -4,10 +4,11 @@ use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
-    $r->addRoute('GET', '/home', 'Pamutlabor\Module\Example@getMessage');
+    $r->addRoute('GET', '/owners', 'Pamutlabor\Module\Owner\OwnerListController@process');
+    $r->addRoute(['GET', 'POST'], '/owner[/{id}]', 'Pamutlabor\Module\Owner\OwnerFormController@process');
     $r->addRoute('GET', '/', 'Pamutlabor\Module\TaskManager\TaskManagerListController@process');
-    $r->addRoute(['GET', 'POST'], '/project[/{id}]', 'Pamutlabor\Module\TaskManager\TaskManagerFormController@process');
-    // Add more routes as needed
+    $r->addRoute(['GET', 'POST'], '/project[/{id:\d+}]', 'Pamutlabor\Module\TaskManager\TaskManagerFormController@process');
+    $r->addRoute(['POST'], '/project/delete', 'Pamutlabor\Module\TaskManager\TaskManagerDeleteController@process');    
 });
 
 // Fetch method and URI
