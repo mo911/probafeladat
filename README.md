@@ -6,7 +6,7 @@
    ```bash
    docker-compose up -d
 3. Create the database with the following command:
-  ```sql
+  ```bash
   docker exec -it proba-database mysql -u root -p -e "CREATE DATABASE welove_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 4. Import the database via the command line: 
   a. Enter the container:
