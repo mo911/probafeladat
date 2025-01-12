@@ -16,9 +16,10 @@ class TaskManagerFormController extends LayoutController
 
     protected function createOrUpdateProject($input) {
         if ($input['projectId'] > 0) {
-            $res = Project::load($input['projectId']);
-            if($res){
-                Project::update($input);
+            $oldObject = Project::load($input['projectId']);
+            if($oldObject){
+                $newObject = Project::update($input);
+                (new TaskManagerModifyEvent())->handle($newObject, $oldObject);
             }
         } else {
             Project::save($input);

@@ -6,7 +6,7 @@ use function FastRoute\simpleDispatcher;
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/owners', 'Pamutlabor\Module\Owner\OwnerListController@process');
     $r->addRoute(['GET', 'POST'], '/owner[/{id}]', 'Pamutlabor\Module\Owner\OwnerFormController@process');
-    $r->addRoute('GET', '/', 'Pamutlabor\Module\TaskManager\TaskManagerListController@process');
+    $r->addRoute(['GET', 'POST'], '/', 'Pamutlabor\Module\TaskManager\TaskManagerListController@process');
     $r->addRoute(['GET', 'POST'], '/project[/{id:\d+}]', 'Pamutlabor\Module\TaskManager\TaskManagerFormController@process');
     $r->addRoute(['POST'], '/project/delete', 'Pamutlabor\Module\TaskManager\TaskManagerDeleteController@process');    
 });

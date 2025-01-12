@@ -4,4 +4,7 @@ return [
     'dbname' => 'welove_test',
     'user' => 'root',
     'password' => 'password',
+    'smtpHost' => '',
+    'smtpUsername' => '',
+    'smtpPassword' => ''
 ];

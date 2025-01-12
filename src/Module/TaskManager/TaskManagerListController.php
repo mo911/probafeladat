@@ -14,17 +14,64 @@ class TaskManagerListController extends LayoutController
     public function __construct() {
         $this->layout = new TaskManagerListView();
     }
+
+    const PAGE_LIMIT = 2;
     protected function handleRequest(array $variable = [], array $post = [], array $get = [])
     {
-        $res = $this->loadData();
-        $this->data = array_merge($this->data, ['projects' => $res]);
+        $selectedStatus = 0;
+        $pageNumber = 1;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $selectedStatus = $post['selectedStatus'] ?? 0;
+            $pageNumber = $post['pageNumber'] ?? 1;
+            if($pageNumber < 1){
+                throw new \Exception('PAGE NUMBER MUST BE GREATER THAN 0');
+            }
+        }
+        $countProjects = $this->countProjects($selectedStatus);
+        $res = $this->loadData($selectedStatus, $countProjects, $pageNumber);
+        $statuses = $this->loadStatuses();
+        $this->data = array_merge(
+            $this->data, 
+            ['projects' => $res], 
+            ['statuses' => $statuses], 
+            ['selectedStatus' => $selectedStatus],
+            ['pagination' => ['limit' => self::PAGE_LIMIT, 'pageNumber' => $pageNumber, 'countProjects' => $countProjects]]
+        );
     }
 
-    protected function loadData()
+    protected function loadStatuses()
     {
         $database = PDODatabase::getConnection();
-        $stmt = $database->prepare(
-            '
+        $stmt = $database->prepare("SELECT * FROM statuses");
+        $stmt->execute();
+        $res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        array_unshift($res, ['id' => 0,'name' => 'Összes']);
+        return $res;
+    }
+
+    protected function countProjects(int $selectedStatus){
+        $sql = '
+                SELECT 
+                    count(p.id) AS darab
+                FROM projects p
+                LEFT JOIN project_status_pivot psp
+                    ON p.id = psp.project_id
+                LEFT JOIN statuses s 
+                    ON psp.status_id = s.id
+            ';
+        if($selectedStatus > 0){
+            $sql .= " WHERE s.id = $selectedStatus";
+        }
+        $database = PDODatabase::getConnection();
+        $stmt = $database->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $res['darab'];        
+    }
+
+    protected function loadData(int $selectedStatus, int $projectCount, int $pageNumber)
+    {
+        $sql = '
                 SELECT 
                     p.id AS projectId,
                     p.title AS projectTitle,
@@ -41,8 +88,18 @@ class TaskManagerListController extends LayoutController
                     ON p.id = psp.project_id
                 LEFT JOIN statuses s 
                     ON psp.status_id = s.id
-            '
-        );
+            ';
+
+        if($selectedStatus > 0){
+            $sql .= " WHERE s.id = $selectedStatus";
+        }
+
+        if($projectCount > self::PAGE_LIMIT){
+            $offset = ($pageNumber - 1) * self::PAGE_LIMIT;
+            $sql .= " LIMIT " . $offset . ", " . self::PAGE_LIMIT;
+        }        
+        $database = PDODatabase::getConnection();
+        $stmt = $database->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC) ?? [];
