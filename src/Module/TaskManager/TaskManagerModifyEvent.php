@@ -3,7 +3,6 @@
 namespace Pamutlabor\Module\TaskManager;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 class TaskManagerModifyEvent
 {
