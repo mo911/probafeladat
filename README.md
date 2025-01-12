@@ -11,10 +11,12 @@
   ```
 
 4. Import the database via the command line: 
-  a. Enter the container:
+   1. Enter the container:
     ```bash
     docker exec -it probafeladat-app bash
-  b. Run the following command inside the container:
-    ```bash
+    ```
+  2. Run the following command inside the container:
+   ```bash
     mysql -h proba-database -u root -p welove_test < welovetest_20250112.sql
+   ```
 5. Open the browser and navigate to: 127.0.0.1:8080
