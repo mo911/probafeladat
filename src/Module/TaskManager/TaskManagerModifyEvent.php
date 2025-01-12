@@ -19,6 +19,7 @@ class TaskManagerModifyEvent
         $mail->Password   = $config['smtpPassword'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+        $mail->CharSet = "UTF-8";
 
         // Email beállítások
         $mail->setFrom('pamutlabor@moszerviz.com', 'Pamutlabor');
